@@ -1,0 +1,8 @@
+build
+doc
+
+*.mex
+*.mexa64
+*.pyc
+*.mat
+*.zip

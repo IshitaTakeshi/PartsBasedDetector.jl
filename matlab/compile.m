@@ -22,7 +22,7 @@ for n = 1:length(files)
     if octave, cmd = [gcc ' ' octaveflags ' ' files{n}];
     else       cmd = [gcc ' ' matlabflags ' ' files{n}];
     end
-    disp(['  ' cmd]); fflush(stdout);
+    disp(['  ' cmd]);
     eval(cmd);
 end
 
@@ -34,27 +34,27 @@ octaveflags = '';
 matlabflags = '-O';
 if isunix()
   % use one of the following depending on your setup
-  % 1 is fastest, 3 is slowest 
+  % 1 is fastest, 3 is slowest
   % 1) multithreaded convolution using blas
   %files{end+1} = '-o fconv -lmwblas fconvblas.cc';
   % 2) mulththreaded convolution without blas
-  files{end+1} = '-o fconv fconvMT.cc';
+  files{end+1} = '-output fconv fconvMT.cc';
   % 3) basic convolution, very compatible
   % files{end+1} = '-o fconv fconv.cc'
 elseif ispc()
-  files{end+1} = '-o fconv fconv.cc';
+  files{end+1} = '-output fconv fconv.cc';
 end
 
 for n = 1:length(files)
     if octave, cmd = [gcc ' ' octaveflags ' ' files{n}];
     else       cmd = [gcc ' ' matlabflags ' ' files{n}];
     end
-    disp(['  ' cmd]); fflush(stdout);
+    disp(['  ' cmd]);
     eval(cmd);
 end
 
 % =============
-% Cleanup 
+% Cleanup
 if octave
     delete *.o;
 end

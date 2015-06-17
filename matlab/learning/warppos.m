@@ -6,15 +6,16 @@ function warped = warppos(name, model, pos)
 f   = model.components{1}(1).filterid;
 siz = size(model.filters(f).w);
 siz = siz(1:2);
-pixels = siz * model.sbin; 
+pixels = siz * model.sbin;
 heights = [pos(:).y2]' - [pos(:).y1]' + 1;
 widths = [pos(:).x2]' - [pos(:).x1]' + 1;
 numpos = length(pos);
 warped = cell(numpos,1);
 cropsize = (siz+2) * model.sbin;
 for i = 1:numpos
-  fprintflush('%s: warp: %d/%d\n', name, i, numpos);
+  %fprintflush('%s: warp: %d/%d\n', name, i, numpos);
   im = imread(pos(i).im);
+  im = double(im) / 255;
   if size(im, 3) == 1
     im = repmat(im,[1 1 3]);
   end

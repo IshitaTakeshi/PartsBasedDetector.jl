@@ -1,4 +1,4 @@
-function model = train(name, model, pos, neg, warp, iter, C, wpos, maxsize, overlap) 
+function model = train(name, model, pos, neg, warp, iter, C, wpos, maxsize, overlap)
 % model = train(name, model, pos, neg, warp, iter, C, Jpos, maxsize, overlap)
 %               1,    2,     3,   4,   5,    6,    7, 8,    9,       10
 % Train a structured SVM with latent assignement of positive variables
@@ -61,7 +61,7 @@ qp.i   = zeros(5,nmax,'int32');
 qp.b   = ones(nmax,1,'single');
 qp.d   = zeros(nmax,1,'double');
 qp.a   = zeros(nmax,1,'double');
-qp.sv  = logical(zeros(1,nmax));  
+qp.sv  = logical(zeros(1,nmax));
 qp.n   = 0;
 qp.lb = [];
 
@@ -78,12 +78,12 @@ for t = 1:iter,
   else
     numpositives = poslatent(name, t, model, pos, overlap);
   end
-  
+
   for i = 1:length(numpositives),
     fprintflush('component %d got %d positives\n', i, numpositives(i));
   end
   assert(qp.n <= nmax);
-  
+
   % Fix positive examples as permenant support vectors
   % Initialize QP soln to a valid weight vector
   % Update QP with coordinate descent
@@ -140,7 +140,7 @@ for i = 1:numpos
 	% skip small examples
 	if (bbox(3)-bbox(1)+1)*(bbox(4)-bbox(2)+1) < minsize
 		continue;
-	end    
+	end
 	% get example
 	im = warped{i};
 	feat = features(im, model.sbin);
@@ -148,7 +148,7 @@ for i = 1:numpos
 end
 global qp;
 numpositives = qp.n;
-  
+
 function qp_poswrite(feat,id,model)
 
 len = numel(feat);
@@ -159,16 +159,16 @@ ex.blocks(end).x   = 1;
 ex.blocks(end+1).i = model.filters.i;
 ex.blocks(end).x   = feat;
 qp_write(ex);
-  
+
 
 % get positive examples using latent detections
 % we create virtual examples by flipping each image left to right
 function numpositives = poslatent(name, t, model, pos, overlap)
-  
+
 numpos = length(pos);
 numpositives = zeros(length(model.components), 1);
 minsize = prod(model.maxsize*model.sbin);
-  
+
 for i = 1:numpos
 	fprintflush('%s: iter %d: latent positive: %d/%d\n', name, t, i, numpos);
 	% skip small examples
@@ -180,7 +180,7 @@ for i = 1:numpos
 	if any(area < minsize)
 		continue;
 	end
-	
+
 	% get example
 	im = imread(pos(i).im);
 	[im, bbox] = croppos(im, bbox);
@@ -203,7 +203,7 @@ I = find(y == 1);
 w = qp.w + qp.w0.*qp.wreg;
 scores = score(w,qp.x,I) / qp.Cpos;
 
-% Computes expected number of nonzeros in sparse feature vector 
+% Computes expected number of nonzeros in sparse feature vector
 function len = sparselen(model)
 
 numblocks = 0;
@@ -232,7 +232,7 @@ for c = 1:length(model.components)
 			numblocks = numblocks + 1;
 		end
 	end
-	
+
 	% Number of entries needed to encode a block-sparse representation
 	%   1 + numberofblocks*2 + #nonzeronumbers
 	len = 1 + numblocks*2 + sum(feat);
