@@ -1,4 +1,4 @@
-/* 
+/*
  *  Software License Agreement (BSD License)
  *
  *  Copyright (c) 2012, Willow Garage, Inc.
@@ -54,40 +54,58 @@ using namespace std;
  * @param display_confidence display the detection confidence above each bounding box
  * for each part
  */
-void Visualize::candidates(const Mat& im, const vectorCandidate& candidates, unsigned int N, Mat& canvas, bool display_confidence) const {
+void Visualize::candidates(const Mat& im, const vectorCandidate& candidates,
+                           unsigned int N, Mat& canvas,
+                           bool display_confidence) const {
 
-	// create a new canvas that we can modify
-    cvtColor(im, canvas, CV_RGB2BGR);
-    if (candidates.size() == 0) return;
+  // create a new canvas that we can modify
+  cvtColor(im, canvas, CV_RGB2BGR);
+  if (candidates.size() == 0) return;
 
-	// generate a set of colors to display. Do this in HSV then convert it
-	const unsigned int ncolors = candidates[0].parts().size();
-	vector<Scalar> colors;
-	for (unsigned int n = 0; n < ncolors; ++n) {
-		Mat color(Size(1,3), CV_32FC3);
-		// Hue is in degrees, not radians (because consistency is over-rated)
-		color.at<float>(0) = (360) / ncolors * n;
-		color.at<float>(1) = 1.0;
-		color.at<float>(2) = 0.7;
-		cvtColor(color, color, CV_HSV2BGR);
-		color = color * 255;
-		colors.push_back(Scalar(color.at<float>(0), color.at<float>(1), color.at<float>(2)));
-	}
+  // generate a set of colors to display. Do this in HSV then convert it
+  const unsigned int ncolors = candidates[0].parts().size();
+  vector<Scalar> colors;
+  for (unsigned int n = 0; n < ncolors; ++n) {
+    Mat color(Size(1,3), CV_32FC3);
+    // Hue is in degrees, not radians (because consistency is over-rated)
+    color.at<float>(0) = (360) / ncolors * n;
+    color.at<float>(1) = 1.0;
+    color.at<float>(2) = 0.7;
+    //cvtColor(color, color, CV_HSV2BGR);
+    color = color * 255;
+    colors.push_back(Scalar(color.at<float>(0),
+                            color.at<float>(1),
+                            color.at<float>(2)));
 
-	// draw each candidate to the canvas
-	const int LINE_THICKNESS = 4;
-	Scalar black(0,0,0);
-	N = (candidates.size() < N) ? candidates.size() : N;
-	for (unsigned int n = 0; n < N; ++n) {
-		Candidate candidate = candidates[n];
-		for (unsigned int p = 0; p < candidate.parts().size(); ++p) {
-			Rect box = candidate.parts()[p];
-			string confidence  = boost::lexical_cast<string>(candidate.confidence()[p]);
-			rectangle(canvas, box, colors[p], LINE_THICKNESS);
-			if (display_confidence && p == 0) putText(canvas, confidence, Point(box.x, box.y-5), FONT_HERSHEY_SIMPLEX, 0.5f, black, 2);
-		}
-		//rectangle(canvas, candidate.boundingBox(), Scalar(255, 0, 0), LINE_THICKNESS);
-	}
+  }
+
+  if(candidates.size() < N) {
+    N = candidates.size();
+  }
+
+  // draw each candidate to the canvas
+  const int LINE_THICKNESS = 4;
+  Scalar black(0,0,0);
+
+  for (unsigned int n = 0; n < N; ++n) {
+    Candidate candidate = candidates[n];
+    for (unsigned int p = 0; p < candidate.parts().size(); ++p) {
+      Rect box = candidate.parts()[p];
+
+      std::cout << candidate.confidence()[p] << std::endl;
+      if(candidate.confidence()[p] >= 0.0) {
+        return;
+      }
+
+      string confidence = boost::lexical_cast<string>(candidate.confidence()[p]);
+      rectangle(canvas, box, colors[p], LINE_THICKNESS);
+      if (display_confidence && p == 0) {
+        putText(canvas, confidence, Point(box.x, box.y-5),
+                FONT_HERSHEY_SIMPLEX, 0.5f, black, 2);
+      }
+    }
+    //rectangle(canvas, candidate.boundingBox(), Scalar(255, 0, 0), LINE_THICKNESS);
+  }
 }
 
 /*! @brief visualize all of the candidate part locations overlaid on an image
@@ -98,8 +116,10 @@ void Visualize::candidates(const Mat& im, const vectorCandidate& candidates, uns
  * @param display_confidence display the detection confidence above each bounding box
  * for each part
  */
-void Visualize::candidates(const Mat& im, const vector<Candidate>& candidates, Mat& canvas, bool display_confidence) const {
-	Visualize::candidates(im, candidates, candidates.size(), canvas, display_confidence);
+void Visualize::candidates(const Mat& im, const vector<Candidate>& candidates,
+                           Mat& canvas, bool display_confidence) const {
+  Visualize::candidates(im, candidates, candidates.size(),
+                        canvas, display_confidence);
 }
 
 /*! @brief visualize a single candidate overlaid on an image
@@ -109,11 +129,12 @@ void Visualize::candidates(const Mat& im, const vector<Candidate>& candidates, M
  * @param display_confidence display the detection confidence above each bounding box
  * for each part
  */
-void Visualize::candidates(const Mat& im, const Candidate& candidate, Mat& canvas, bool display_confidence) const {
+void Visualize::candidates(const Mat& im, const Candidate& candidate,
+                           Mat& canvas, bool display_confidence) const {
 
-	vector<Candidate> vec;
-	vec.push_back(candidate);
-	candidates(im, vec, canvas, display_confidence);
+  vector<Candidate> vec;
+  vec.push_back(candidate);
+  candidates(im, vec, canvas, display_confidence);
 }
 
 /*! @brief display the raw image with no overlay
@@ -121,8 +142,8 @@ void Visualize::candidates(const Mat& im, const Candidate& candidate, Mat& canva
  * @param im the input image frame
  */
 void Visualize::image(const Mat& im) const {
-    Mat canvas;
-    cvtColor(im, canvas, CV_RGB2BGR);
-	namedWindow(name_, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO | CV_GUI_EXPANDED);
-	imshow(name_, canvas);
+  Mat canvas;
+  cvtColor(im, canvas, CV_RGB2BGR);
+  namedWindow(name_, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO | CV_GUI_EXPANDED);
+  imshow(name_, canvas);
 }
