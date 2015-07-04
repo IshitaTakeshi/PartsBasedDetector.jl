@@ -62,11 +62,6 @@ $cmake ..
 $make
 ```
 
-## Detecting
-To run the detector, please consult the Mainpage of the docs, or  
-src/demo.cpp. Both contain examples of how the detector can be  
-initialised and run
-
 ## Learning
 The learning code is currently only in Octave/Matlab. This is because  
 the detector supports a number of learning schema, and porting all of  
