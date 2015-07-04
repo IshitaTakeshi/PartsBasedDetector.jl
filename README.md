@@ -27,9 +27,6 @@ $octave
 > pkg install general-1.3.4.tar.gz
 > pkg install signal-1.3.2.tar.gz
 > pkg install image-2.2.2.tar.gz
-> cd matlab
-> compile
-> training_demo
 ```
 
 The project has the following dependencies:
@@ -74,3 +71,11 @@ on training a model
 
 This package is developed and maintained by Hilton Bristow, Willow Garage
 
+## Generating models
+```
+$cd matlab
+$octave
+> pkg load image
+> compile
+> training_demo
+```
