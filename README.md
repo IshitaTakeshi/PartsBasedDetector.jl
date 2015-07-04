@@ -7,8 +7,8 @@ following paper:
     Yi Yang, Deva Ramanan, "Articulated Pose Estimation with
     Flexible Mixtures-of-Parts," CVPR 2011
 
-#Setting environment
-## Installing Octave
+## Setting environment
+### Installing Octave
 
 ```
 $sudo apt-get install libgraphicsmagick++-dev
@@ -19,7 +19,7 @@ $make -j4
 $sudo make install
 ```
 
-## Installing packages
+### Installing packages
 
 ```
 $octave
@@ -38,10 +38,10 @@ The project has the following dependencies:
 * ROS     OPTIONAL (for publishing detections on a ROS topic)
 * ECTO    OPTIONAL (for building and ECTO cell)
 
-#Downloading data
+## Downloading data
     $python3 dataset/loader_ethz.py
 
-#Building
+## Building
 The project can be built in one of two modes:
 
 * A standalone binary (for testing functionality)
@@ -57,12 +57,12 @@ $cmake ..
 $make
 ```
 
-#Detecting
+## Detecting
 To run the detector, please consult the Mainpage of the docs, or
 src/demo.cpp. Both contain examples of how the detector can be
 initialised and run
 
-#Learning
+## Learning
 The learning code is currently only in Octave/Matlab. This is because
 the detector supports a number of learning schema, and porting all of
 these to C++ is not practical at this time.
@@ -71,7 +71,7 @@ on training a model
 
 This package is developed and maintained by Hilton Bristow, Willow Garage
 
-## Generating models
+### Generating models
 ```
 $cd matlab
 $octave
