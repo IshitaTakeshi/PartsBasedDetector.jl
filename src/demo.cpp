@@ -1,4 +1,4 @@
-/* 
+/*
  *  Software License Agreement (BSD License)
  *
  *  Copyright (c) 2012, Willow Garage, Inc.
@@ -45,9 +45,7 @@
 #include "PartsBasedDetector.hpp"
 #include "Candidate.hpp"
 #include "FileStorageModel.hpp"
-#ifdef WITH_MATLABIO
-	#include "MatlabIOModel.hpp"
-#endif
+#include "MatlabIOModel.hpp"
 #include "Visualize.hpp"
 #include "types.hpp"
 #include "nms.hpp"
@@ -69,12 +67,9 @@ int main(int argc, char** argv) {
 	string ext = boost::filesystem::path(argv[1]).extension().string();
 	if (ext.compare(".xml") == 0 || ext.compare(".yaml") == 0) {
 		model.reset(new FileStorageModel);
-	}
-#ifdef WITH_MATLABIO
-	else if (ext.compare(".mat") == 0) {
+	} else if (ext.compare(".mat") == 0) {
 		model.reset(new MatlabIOModel);
 	}
-#endif
 	else {
 		printf("Unsupported model format: %s\n", ext.c_str());
 		exit(-2);
