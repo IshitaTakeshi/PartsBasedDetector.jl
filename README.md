@@ -31,6 +31,7 @@ $octave
 
 The project has the following dependencies:
 
+* Octave  REQUIRED (for learning)
 * OpenCV  REQUIRED (for image processing)
 * CMake   REQUIRED (for building)
 * Doxygen OPTIONAL (for documentation)
@@ -38,8 +39,10 @@ The project has the following dependencies:
 * ROS     OPTIONAL (for publishing detections on a ROS topic)
 * ECTO    OPTIONAL (for building and ECTO cell)
 
-## Downloading data
-    $python3 dataset/loader_ethz.py
+## Downloading dataset
+```
+$python3 dataset/loader_ethz.py
+```
 
 ## Building
 The project can be built in one of two modes:
@@ -51,6 +54,8 @@ To configure the project, set the options at the top of CMakeLists.txt
 To build the project, follow the normal cmake routine from the root folder:
 
 ```
+$cd PartsBasedDetectorMod
+$git clone https://github.com/hbristow/cvmatio.git
 $mkdir build
 $cd build
 $cmake ..
@@ -58,14 +63,14 @@ $make
 ```
 
 ## Detecting
-To run the detector, please consult the Mainpage of the docs, or
-src/demo.cpp. Both contain examples of how the detector can be
+To run the detector, please consult the Mainpage of the docs, or  
+src/demo.cpp. Both contain examples of how the detector can be  
 initialised and run
 
 ## Learning
-The learning code is currently only in Octave/Matlab. This is because
-the detector supports a number of learning schema, and porting all of
-these to C++ is not practical at this time.
+The learning code is currently only in Octave/Matlab. This is because  
+the detector supports a number of learning schema, and porting all of  
+these to C++ is not practical at this time.  
 Please consult the README within the matlab/ directory for instructions
 on training a model
 
@@ -78,4 +83,10 @@ $octave
 > pkg load image
 > compile
 > training_demo
+```
+
+### Detecting
+```
+cd build
+./src/PartsBasedDetector ../matlab/demo_model.mat <path to image>
 ```
