@@ -1,4 +1,4 @@
-/* 
+/*
  *  Software License Agreement (BSD License)
  *
  *  Copyright (c) 2012, Willow Garage, Inc.
@@ -238,13 +238,11 @@ void DynamicProgram<T>::argmin(Parts& parts, const vector2DMat& rootv, const vec
 					}
 
 					// calculate the bounding rectangle and add it to the Candidate
-					Point pone = Point(1,1);
-					Point xy1 = (Point(xv[p],yv[p])-pone)*scale;
-					Point xy2 = xy1 + Point(part.xsize(mv[p]), part.ysize(mv[p]))*scale - pone;
-					if (part.isRoot()) 
-					  candidate.addPart(Rect(xy1, xy2), rootv[n][c].at<T>(inds[i]));
-					else
-					  candidate.addPart(Rect(xy1, xy2), 0.0);
+					Point point = Point(xv[p],yv[p]) * scale;
+					if (part.isRoot())
+					  candidate.addPart(point, rootv[n][c].at<T>(inds[i]));
+          else
+					  candidate.addPart(point, 0.0);
 				}
 				#ifdef _OPENMP
 				#pragma omp critical(addcandidate)

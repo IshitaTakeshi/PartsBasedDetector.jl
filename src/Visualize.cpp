@@ -90,17 +90,15 @@ void Visualize::candidates(const Mat& im, const vectorCandidate& candidates,
   for (unsigned int n = 0; n < N; ++n) {
     Candidate candidate = candidates[n];
     for (unsigned int p = 0; p < candidate.parts().size(); ++p) {
-      Rect box = candidate.parts()[p];
+      Point point = candidate.parts()[p];
 
       std::cout << candidate.confidence()[p] << std::endl;
-      if(candidate.confidence()[p] >= 0.0) {
-        return;
-      }
 
       string confidence = boost::lexical_cast<string>(candidate.confidence()[p]);
-      rectangle(canvas, box, colors[p], LINE_THICKNESS);
+      circle(canvas, point, 32.0, colors[p], 10);
+
       if (display_confidence && p == 0) {
-        putText(canvas, confidence, Point(box.x, box.y-5),
+        putText(canvas, confidence, Point(point.x, point.y-5),
                 FONT_HERSHEY_SIMPLEX, 0.5f, black, 2);
       }
     }

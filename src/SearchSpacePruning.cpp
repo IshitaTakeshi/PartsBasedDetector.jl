@@ -1,4 +1,4 @@
-/* 
+/*
  *  Software License Agreement (BSD License)
  *
  *  Copyright (c) 2012, Willow Garage, Inc.
@@ -71,30 +71,6 @@ void SearchSpacePruning<T>::filterResponseByDepth(vector2DMat& pdfs, const vecto
 	}
 }
 
-template<typename T>
-void SearchSpacePruning<T>::filterCandidatesByDepth(Parts& parts, vectorCandidate& candidates, const Mat& depth, const float zfactor) {
-
-	vectorCandidate new_candidates;
-	const unsigned int N = candidates.size();
-	for (unsigned int n = 0; n < N; ++n) {
-		const unsigned int c = candidates[n].component();
-		const unsigned int nparts = parts.nparts(c);
-		const vector<Rect>& boxes = candidates[n].parts();
-		for (unsigned int p = nparts-1; p >= 1; --p) {
-			ComponentPart part = parts.component(c,p);
-			Point anchor = part.anchor(0);
-			Rect child   = boxes[part.self()];
-			Rect parent  = boxes[part.parent().self()];
-			T cmed_depth = Math::median<T>(depth(child));
-			T pmed_depth = Math::median<T>(depth(parent));
-			if (cmed_depth > 0 && pmed_depth > 0) {
-				if (abs(cmed_depth-pmed_depth) > norm(anchor)*zfactor) break;
-			}
-			if (p == 1) new_candidates.push_back(candidates[n]);
-		}
-	}
-	candidates = new_candidates;
-}
 
 // declare all specializations of the template (this must be the last declaration in the file)
 template class SearchSpacePruning<float>;

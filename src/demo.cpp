@@ -64,16 +64,15 @@ int main(int argc, char** argv) {
 
 	// determine the type of model to read
 	boost::scoped_ptr<Model> model;
-	string ext = boost::filesystem::path(argv[1]).extension().string();
-	if (ext.compare(".xml") == 0 || ext.compare(".yaml") == 0) {
-		model.reset(new FileStorageModel);
-	} else if (ext.compare(".mat") == 0) {
-		model.reset(new MatlabIOModel);
-	}
-	else {
+
+  string ext = boost::filesystem::path(argv[1]).extension().string();
+	if (ext.compare(".mat") != 0) {
 		printf("Unsupported model format: %s\n", ext.c_str());
 		exit(-2);
-	}
+  }
+
+  model.reset(new MatlabIOModel);
+
 	bool ok = model->deserialize(argv[1]);
 	if (!ok) {
 		printf("Error deserializing file\n");
@@ -87,18 +86,14 @@ int main(int argc, char** argv) {
 	// load the image from file
 	Mat_<float> depth;
 	Mat im = imread(argv[2]);
-        if (im.empty()) {
-            printf("Image not found or invalid image format\n");
-            exit(-4);
-        }
-	if (argc == 4) {
-		depth = imread(argv[3], CV_LOAD_IMAGE_ANYDEPTH);
-		// convert the depth image from mm to m
-		depth = depth / 1000.0f;
-	}
+  if (im.empty()) {
+      printf("Image not found or invalid image format\n");
+      exit(-4);
+  }
 
 	// detect potential candidates in the image
 	double t = (double)getTickCount();
+
 	vector<Candidate> candidates;
 	pbd.detect(im, depth, candidates);
 	printf("Detection time: %f\n", ((double)getTickCount() - t)/getTickFrequency());
@@ -107,13 +102,15 @@ int main(int argc, char** argv) {
 	// display the best candidates
 	Visualize visualize(model->name());
 	SearchSpacePruning<float> ssp;
-        Mat canvas;
+  Mat canvas;
 	if (candidates.size() > 0) {
 	    Candidate::sort(candidates);
 	    //Candidate::nonMaximaSuppression(im, candidates, 0.2);
 	    visualize.candidates(im, candidates, canvas, true);
-            visualize.image(canvas);
+      visualize.image(canvas);
 	    waitKey();
 	}
 	return 0;
 }
+
+
