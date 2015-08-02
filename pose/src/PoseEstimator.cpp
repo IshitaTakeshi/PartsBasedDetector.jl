@@ -9,14 +9,18 @@
 #include "PoseEstimator.hpp"
 
 using namespace std;
+using namespace cv;
 
 
-PoseEstimator::PoseEstimator(string filename) {
-  string ext = boost::filesystem::path(filename).extension().string();
-  assert(ext.compare(".mat") == 0);
-
+PoseEstimator::PoseEstimator(const string& model_filename) {
   boost::scoped_ptr<Model> model;
   model.reset(new MatlabIOModel);
+
+	bool ok = model->deserialize(model_filename);
+	if (!ok) {
+		printf("Error deserializing file\n");
+		exit(-3);
+	}
 
   pbd.distributeModel(*model);
 }
@@ -34,8 +38,22 @@ PoseEstimator::PoseEstimator(string filename) {
 //  return image;
 //}
 
+vector<Candidate> PoseEstimator::estimate(const string& image_filename) {
+	Mat_<float> depth;
+	Mat im = imread(image_filename);
+  if (im.empty()) {
+      printf("Image not found or invalid image format\n");
+      exit(-4);
+  }
 
-////TODO candidate to points of parts considering invisible points
+	vector<Candidate> candidates;
+	pbd.detect(im, depth, candidates);
+
+  return candidates;
+}
+
+
+
 //vector<Candidate> PoseEstimator::estimate(int[][][] pixelArray,
 //                                          int rows, int cols) {
 //  ///3D pixelArray to cv::Mat
