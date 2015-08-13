@@ -1,9 +1,26 @@
+# Copyright (C) 2015 Ishita Takeshi
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 module PoseEstimator
+
 
 export Candidate, create_estimator, estimate
 
 
-type Part
+type Point
     x::Uint64
     y::Uint64
 end
@@ -11,7 +28,7 @@ end
 
 type CCandidate
     size::Uint64
-    parts::Ptr{Ptr{Part}}
+    parts::Ptr{Ptr{Point}}
     confidence::Ptr{Float32}
 end
 
@@ -73,7 +90,6 @@ function free_candidates(candidates)
     ccall((:free_candidates, "./pose/lib/libPartsBasedDetector.so"),
           Void, (Ptr{CCandidates},), candidates)
 end
-
 
 
 type Candidate
