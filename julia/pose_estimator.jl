@@ -93,8 +93,8 @@ end
 
 
 type Candidate
-    parts
-    confidence
+    parts::Array{Point}
+    confidence::Array{Float32}
 end
 
 

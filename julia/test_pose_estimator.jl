@@ -7,11 +7,13 @@ pyinitialize("python3")
 using PyPlot
 pygui(:tk)
 
+PyPlot.clf() #clear previously created figure in REPL
+
 using PoseEstimator
 
 
-model_filename = "./pose/matlab/demo_model.mat"
-image_filename = "./pose/dataset/images/2007_001423.jpg"
+model_filename = "./pose/matlab/lsp.mat"
+image_filename = "./pose/dataset/lsp_dataset/positive/im0033.jpg"
 
 
 estimator = create_estimator(model_filename)
@@ -29,13 +31,13 @@ index = indmax(confidence)
 image = PyPlot.imread(image_filename)
 PyPlot.imshow(image)
 
-for candidate in candidates
-    for point in points
-        PyPlot.scatter([point.x], [point.y])
-    end
+for i in 1:length(candidates[1].parts)
+    point = candidates[1].parts[i]
+    PyPlot.scatter([point.x], [point.y])
+    PyPlot.annotate(i, [point.x, point.y], color="white")
 end
-#
-PyPlot.savefig("./fig1.jpg")
+
+PyPlot.savefig("result.jpg")
 #for candidate in candidates
 #    println(candidate.parts)
 #end
