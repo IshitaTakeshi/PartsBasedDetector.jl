@@ -49,7 +49,7 @@ type PointerHandler{T}
 end
 
 
-clib_filename = "./pose/lib/libPartsBasedDetector.so"
+clib_filename = "pose/lib/libPartsBasedDetector.so"
 
 
 """Finalize a PointerHandler type variable by the finalizer"""
@@ -62,7 +62,7 @@ end
 
 
 function create_estimator(model_filename)
-    p = ccall((:create_estimator, "./pose/lib/libPartsBasedDetector.so"),
+    p = ccall((:create_estimator, "pose/lib/libPartsBasedDetector.so"),
               Ptr{Void}, (Cstring,), model_filename)
     estimator = PointerHandler(p)
     finalizer(estimator, x -> pointer_finalizer(x, destroy_estimator))
@@ -71,7 +71,7 @@ end
 
 
 function estimate_(estimator::PointerHandler, image_filename)
-    p = ccall((:estimate, "./pose/lib/libPartsBasedDetector.so"),
+    p = ccall((:estimate, "pose/lib/libPartsBasedDetector.so"),
               Ptr{CCandidates}, (Ptr{Void}, Cstring),
               estimator.pointer, image_filename)
     candidates = PointerHandler(p)
@@ -81,19 +81,19 @@ end
 
 
 function destroy_estimator(estimator)
-    ccall((:destroy_estimator, "./pose/lib/libPartsBasedDetector.so"),
+    ccall((:destroy_estimator, "pose/lib/libPartsBasedDetector.so"),
           Void, (Ptr{Void},), estimator)
 end
 
 
 function free_candidates(candidates)
-    ccall((:free_candidates, "./pose/lib/libPartsBasedDetector.so"),
+    ccall((:free_candidates, "pose/lib/libPartsBasedDetector.so"),
           Void, (Ptr{CCandidates},), candidates)
 end
 
 
 type Candidate
-    parts::Array{Point}
+    parts
     confidence::Array{Float32}
 end
 
@@ -101,7 +101,14 @@ end
 function estimate(estimator::PointerHandler, image_filename)
     function load_parts(candidate)
         array = pointer_to_array(candidate.parts, candidate.size)
-        return [unsafe_load(p) for p in array]
+
+        points = Array(Uint64, candidate.size, 2)
+        for (i, p) in enumerate(array)
+            point = unsafe_load(p)
+            points[i, :] = [point.x point.y]
+        end
+
+        return points
     end
 
     function load_confidence(candidate)
@@ -121,4 +128,5 @@ function estimate(estimator::PointerHandler, image_filename)
     pointer_array = pointer_to_array(c.candidates, c.size)
     return [load_candidate(c) for c in pointer_array]
 end
+
 end
