@@ -21,43 +21,48 @@ export Candidate, create_estimator, estimate
 
 
 type Point
-    x::Uint64
-    y::Uint64
+    x::UInt32
+    y::UInt32
 end
 
 
 type CCandidate
-    size::Uint64
+    size::UInt32
     parts::Ptr{Ptr{Point}}
     confidence::Ptr{Float32}
 end
 
 
 type CCandidates
-    size::Uint64
+    size::UInt32
     candidates::Ptr{Ptr{CCandidate}}
 end
 
 
-"""
-Pointer handler
-We need this type since the finalizer function in Julia
-doesn't allow the Ptr{Void} type variable.
-"""
 type PointerHandler{T}
+    """
+    Pointer handler
+    We need this type since the finalizer function in Julia
+    doesn't allow Ptr{Void} type variables.
+    """
     pointer::Ptr{T}
 end
 
 
-clib_filename = "pose/lib/libPartsBasedDetector.so"
-
-
-"""Finalize a PointerHandler type variable by the finalizer"""
 function pointer_finalizer(handler::PointerHandler, finalizer::Function)
+    """
+    Finalize a PointerHandler type variable by the finalizer
+    """
     if handler.pointer != C_NULL
         finalizer(handler.pointer)
         handler.pointer = C_NULL
     end
+end
+
+
+function destroy_estimator(estimator)
+    ccall((:destroy_estimator, "pose/lib/libPartsBasedDetector.so"),
+          Void, (Ptr{Void},), estimator)
 end
 
 
@@ -67,6 +72,12 @@ function create_estimator(model_filename)
     estimator = PointerHandler(p)
     finalizer(estimator, x -> pointer_finalizer(x, destroy_estimator))
     return estimator
+end
+
+
+function free_candidates(candidates)
+    ccall((:free_candidates, "pose/lib/libPartsBasedDetector.so"),
+          Void, (Ptr{CCandidates},), candidates)
 end
 
 
@@ -80,55 +91,54 @@ function estimate_(estimator::PointerHandler, image_filename)
 end
 
 
-function destroy_estimator(estimator)
-    ccall((:destroy_estimator, "pose/lib/libPartsBasedDetector.so"),
-          Void, (Ptr{Void},), estimator)
-end
-
-
-function free_candidates(candidates)
-    ccall((:free_candidates, "pose/lib/libPartsBasedDetector.so"),
-          Void, (Ptr{CCandidates},), candidates)
+function print_candidate(candidate)
+    ccall((:print_candidate, "pose/lib/libPartsBasedDetector.so"),
+          Void, (Ptr{CCandidate},), candidate)
 end
 
 
 type Candidate
-    parts::Array{Int64, 2}
+    size::UInt32
+    parts::Array{Int32, 2}
     confidence::Array{Float32}
 end
 
 
-function estimate(estimator::PointerHandler, image_filename)
+function estimate(estimator::PointerHandler, image_filename, n_candidates = 10)
     function load_parts(candidate)
         array = pointer_to_array(candidate.parts, candidate.size)
-
-        points = Array(Uint64, 2, candidate.size)
+        points = Array(UInt32, candidate.size, 2)
         for (i, p) in enumerate(array)
             point = unsafe_load(p)
-            x = convert(Int64, point.x)
-            y = convert(Int64, point.y)
-            points[:, i] = [x, y]
+            points[i, :] = [point.x, point.y]
         end
 
         return points
     end
 
     function load_confidence(candidate)
-        pointer_to_array(candidate.confidence, candidate.size)
+        confidence = pointer_to_array(candidate.confidence, candidate.size)
+        return copy(confidence)  # not to share the object with c
     end
 
     function load_candidate(candidate_pointer)
         candidate = unsafe_load(candidate_pointer)
         parts = load_parts(candidate)
         confidence = load_confidence(candidate)
-        Candidate(parts, confidence)
+        Candidate(candidate.size, parts, confidence)
     end
 
-    p = estimate_(estimator, image_filename)
-    c = unsafe_load(p.pointer)
+    handler = estimate_(estimator, image_filename)
+    c = unsafe_load(handler.pointer)
+    candidate_pointers = pointer_to_array(c.candidates, c.size)
 
-    pointer_array = pointer_to_array(c.candidates, c.size)
-    return [load_candidate(c) for c in pointer_array]
+    N = min(n_candidates, length(candidate_pointers))
+    candidates = Array(Candidate, N)
+    for i in 1:N
+        candidates[i] = load_candidate(candidate_pointers[i])
+    end
+
+    return candidates
 end
 
 end
