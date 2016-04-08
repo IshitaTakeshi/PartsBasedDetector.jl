@@ -1,3 +1,0 @@
-[submodule "pose/cvmatio"]
-	path = pose/cvmatio
-	url = https://github.com/hbristow/cvmatio.git
