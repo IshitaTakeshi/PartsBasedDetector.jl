@@ -1,13 +1,14 @@
-include("pose/estimator.jl")
+include("estimator.jl")
 include("image.jl")
 
-using Images: imread, imwrite, data, Image
+using Images: data, Image, load
+using PyPlot
 
 using PoseEstimator: create_estimator, estimate
 
 
-model_filename = "./pose/models/fashionista2.mat"
-image_filename = "./pose/dataset/fashionista/image10.jpg"
+model_path = "pose/models/lsp.mat"
+image_path = "pose/dataset/dataset/INRIAPerson/Train/pos/crop001012.png"
 
 
 function get_bounding_box_of_person(candidate)
@@ -23,16 +24,22 @@ end
 
 default_size = (100, 180)
 
-estimator = create_estimator(model_filename)
-candidates = estimate(estimator, image_filename)
+estimator = create_estimator(model_path)
+candidates = estimate(estimator, image_path, 3)
+for c in candidates
+    println("size = $(c.size)")
+    println("parts = $(c.parts)")
+    println("confidence = $(c.confidence)")
+end
 
 parts = candidates[1].parts
-writecsv(open("prediction.txt", "w"), parts')
-annotation = readcsv(open("./pose/dataset/fashionista/annotation10.txt"))
-annotation = transpose(annotation)
-println(parts-annotation)
-image = imread(image_filename)
+writedlm("prediction.txt", parts)
 
-box = get_bounding_box_of_person(candidates[1])
-image = imcrop(image, box)
-image = Images.imresize(image, default_size)
+#ground truth
+#annotation = readcsv(open("pose/dataset/dataset/fashionista/annotation10.txt"))
+
+#image = load(image_path)
+#
+#box = get_bounding_box_of_person(candidates[1])
+#image = imcrop(image, box)
+#image = Images.imresize(image, default_size)
