@@ -2,13 +2,14 @@ include("estimator.jl")
 include("image.jl")
 
 using Images: data, Image, load
-using PyPlot
+using PyCall
 
 using PoseEstimator: create_estimator, estimate
 
 
-model_path = "pose/models/lsp.mat"
-image_path = "pose/dataset/dataset/INRIAPerson/Train/pos/crop001012.png"
+model_path = "./pose/models/xml/PersonINRIA_9parts.xml"
+image_path = "./pose/dataset/dataset/INRIAPerson/Train/pos/person_044.png"
+#image_path = "pose/dataset/dataset/INRIAPerson/Train/pos/crop001012.png"
 
 
 function get_bounding_box_of_person(candidate)
@@ -33,8 +34,15 @@ for c in candidates
 end
 
 parts = candidates[1].parts
-writedlm("prediction.txt", parts)
 
+@pyimport matplotlib.pyplot as plt
+x, y = parts[:, 1], parts[:, 2]
+println("x = $x")
+println("y = $y")
+image = plt.imread(image_path)
+plt.imshow(image)
+plt.plot(x, y, "ko")
+plt.show()
 #ground truth
 #annotation = readcsv(open("pose/dataset/dataset/fashionista/annotation10.txt"))
 
