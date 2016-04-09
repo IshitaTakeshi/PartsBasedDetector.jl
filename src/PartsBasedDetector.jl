@@ -14,10 +14,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-module PoseEstimator
+module PartsBasedDetector
 
-
-export Candidate, create_estimator, estimate
+export Candidate, make_estimator, estimate
 
 
 type Point
@@ -66,8 +65,9 @@ function destroy_estimator(estimator)
 end
 
 
-function create_estimator(model_filename)
-    p = ccall((:create_estimator, "pose/lib/libPartsBasedDetector.so"),
+function make_estimator(
+            model_filename = "./pose/models/xml/PersonINRIA_9parts.xml")
+    p = ccall((:make_estimator, "pose/lib/libPartsBasedDetector.so"),
               Ptr{Void}, (Cstring,), model_filename)
     estimator = PointerHandler(p)
     finalizer(estimator, x -> pointer_finalizer(x, destroy_estimator))
@@ -104,7 +104,7 @@ type Candidate
 end
 
 
-function estimate(estimator::PointerHandler, image_filename, n_candidates = 10)
+function estimate(estimator::PointerHandler, image_filename; n_candidates = 10)
     function load_parts(candidate)
         array = pointer_to_array(candidate.parts, candidate.size)
         points = Array(UInt32, candidate.size, 2)
