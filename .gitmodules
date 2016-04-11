@@ -1,3 +1,0 @@
-[submodule "src/pose"]
-	path = src/pose
-	url = git@github.com:IshitaTakeshi/PartsBasedDetector.git
