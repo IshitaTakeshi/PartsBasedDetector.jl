@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-project_root=$(julia -e 'print(Pkg.dir("PartsBasedDetector"))')
-
 address="https://github.com/IshitaTakeshi/PartsBasedDetector.git"
+
+project_root=$(julia -e 'print(Pkg.dir("PartsBasedDetector"))')
 deps_dir="$project_root/deps"
 prefix="$deps_dir/usr"
 src_dir="$deps_dir/src"
@@ -31,3 +31,6 @@ cd $pbd_build_dir
 cmake $pbd_dir
 make -j4
 sudo make install
+
+mkdir -p "$prefix/lib"
+cp "$pbd_dir/lib/libPartsBasedDetector.so" "$prefix/lib"
