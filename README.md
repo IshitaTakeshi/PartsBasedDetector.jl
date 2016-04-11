@@ -5,7 +5,8 @@ PartsBasedDetector
 
 ```julia
 Pkg.add("PartsBasedDetector")
-Pkg.build("PartsBasedDetector")
+cd deps
+./build.sh
 ```
 
 # Dependencies

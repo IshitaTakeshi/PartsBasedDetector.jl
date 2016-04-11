@@ -1,11 +1,6 @@
 #!/usr/bin/env sh
 
-if [ $# -eq 0 ]; then
-    echo 'project root not given'
-    exit 1
-fi
-
-project_root="$1"
+project_root=$(julia -e 'print(Pkg.dir("PartsBasedDetector"))')
 
 address="https://github.com/IshitaTakeshi/PartsBasedDetector.git"
 deps_dir="$project_root/deps"
@@ -35,4 +30,4 @@ mkdir -p $pbd_build_dir
 cd $pbd_build_dir
 cmake $pbd_dir
 make -j4
-make install
+sudo make install
