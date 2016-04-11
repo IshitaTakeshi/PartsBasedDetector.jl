@@ -32,5 +32,5 @@ cmake $pbd_dir
 make -j4
 sudo make install
 
-mkdir -p "$prefix/lib"
-cp "$pbd_dir/lib/libPartsBasedDetector.so" "$prefix/lib"
+mkdir -p "$project_root/lib"
+cp "$pbd_dir/lib/libPartsBasedDetector.so" "$project_root/lib"
