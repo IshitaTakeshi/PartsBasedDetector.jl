@@ -8,3 +8,6 @@ deps/src
 *.mexa64
 *.pyc
 *.swp
+
+*.png
+*.jpg
