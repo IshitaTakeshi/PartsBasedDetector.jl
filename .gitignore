@@ -1,0 +1,13 @@
+build
+doc
+CMakeFiles
+pose/dataset/dataset
+deps/src
+
+*.mex
+*.mexa64
+*.pyc
+*.swp
+
+*.png
+*.jpg
