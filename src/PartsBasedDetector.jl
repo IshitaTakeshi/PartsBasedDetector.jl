@@ -18,6 +18,9 @@ module PartsBasedDetector
 
 export Candidate, make_estimator, estimate
 
+const shared_library_path = "../lib/libPartsBasedDetector.so"
+const model_path = joinpath(Pkg.dir("PartsBasedDetector"),
+                            "models", "PersonINRIA_9parts.xml")
 
 type Point
     x::UInt32
@@ -60,15 +63,14 @@ end
 
 
 function destroy_estimator(estimator)
-    ccall((:destroy_estimator, "pose/lib/libPartsBasedDetector.so"),
+    ccall((:destroy_estimator, shared_library_path),
           Void, (Ptr{Void},), estimator)
 end
 
 
-function make_estimator(
-            model_filename = "./pose/models/xml/PersonINRIA_9parts.xml")
-    p = ccall((:make_estimator, "pose/lib/libPartsBasedDetector.so"),
-              Ptr{Void}, (Cstring,), model_filename)
+function make_estimator(model_path = model_path)
+    p = ccall((:make_estimator, shared_library_path),
+              Ptr{Void}, (Cstring,), model_path)
     estimator = PointerHandler(p)
     finalizer(estimator, x -> pointer_finalizer(x, destroy_estimator))
     return estimator
@@ -76,13 +78,13 @@ end
 
 
 function free_candidates(candidates)
-    ccall((:free_candidates, "pose/lib/libPartsBasedDetector.so"),
+    ccall((:free_candidates, shared_library_path),
           Void, (Ptr{CCandidates},), candidates)
 end
 
 
 function estimate_(estimator::PointerHandler, image_filename)
-    p = ccall((:estimate, "pose/lib/libPartsBasedDetector.so"),
+    p = ccall((:estimate, shared_library_path),
               Ptr{CCandidates}, (Ptr{Void}, Cstring),
               estimator.pointer, image_filename)
     candidates = PointerHandler(p)
@@ -92,7 +94,7 @@ end
 
 
 function print_candidate(candidate)
-    ccall((:print_candidate, "pose/lib/libPartsBasedDetector.so"),
+    ccall((:print_candidate, shared_library_path),
           Void, (Ptr{CCandidate},), candidate)
 end
 
