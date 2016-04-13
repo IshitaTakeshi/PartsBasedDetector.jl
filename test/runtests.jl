@@ -8,12 +8,8 @@ filename = "dress.jpg"
 url = "http://images0.chictopia.com/photos/districtofchic/9466442894/" *
       "black-skinny-jeans-dl1961-jeans-sky-blue-pixie-market-shirt_400.jpg"
 
-if isfile(filename)
-    rm(filename)
-end
-
 filename_png = replace(filename, ".jpg", ".png")
-run(`wget $url -O $filename`)
+run(`wget --continue $url -O $filename`)
 run(`convert $filename $filename_png`)
 
 estimator = make_estimator()
