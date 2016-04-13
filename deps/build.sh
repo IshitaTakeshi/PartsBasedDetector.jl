@@ -17,7 +17,8 @@ pbd_build_dir="$pbd_dir/build"
 cvmatio_dir="$pbd_dir/cvmatio"
 cvmatio_build_dir="$cvmatio_dir/build"
 
-sudo apt-get install git cmake libboost-all-dev doxygen zlib1g-dev
+sudo apt-get install git cmake libboost-all-dev doxygen zlib1g-dev python3-matplotlib python-matplotlib
+git submodule update --init
 
 mkdir -p $src_dir
 
