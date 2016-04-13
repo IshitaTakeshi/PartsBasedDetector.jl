@@ -1,6 +1,7 @@
 build
 doc
 CMakeFiles
+lib
 pose/dataset/dataset
 deps/src
 
