@@ -68,7 +68,7 @@ function destroy_estimator(estimator)
 end
 
 
-function make_estimator(model_path = model_path)
+function make_estimator(model_path::AbstractString = model_path)
     p = ccall((:make_estimator, shared_library_path),
               Ptr{Void}, (Cstring,), model_path)
     estimator = PointerHandler(p)
@@ -83,7 +83,7 @@ function free_candidates(candidates)
 end
 
 
-function estimate_(estimator::PointerHandler, image_filename)
+function estimate_(estimator::PointerHandler, image_filename::AbstractString)
     p = ccall((:estimate, shared_library_path),
               Ptr{CCandidates}, (Ptr{Void}, Cstring),
               estimator.pointer, image_filename)
