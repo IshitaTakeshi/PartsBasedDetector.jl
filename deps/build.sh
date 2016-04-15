@@ -37,7 +37,7 @@ if [ "$(pkg-config --modversion opencv)" != "2.4.9" ]; then
     sudo make install
     sudo checkinstall
     sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
-    sudo ldconfig 
+    sudo ldconfig
 fi
 
 if [ ! -d "$pbd_dir" ]; then
