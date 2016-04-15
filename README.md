@@ -3,12 +3,18 @@ PartsBasedDetector.jl
 
 This is a Julia interface for [PartsBasedDetector](https://github.com/wg-perception/PartsBasedDetector)
 
-#Setting environment
+# Installation
+
+```julia
+$julia
+> Pkg.clone("https://github.com/IshitaTakeshi/PartsBasedDetector.jl.git")
+> Pkg.build("PartsBasedDetector")
+```
+
+If build fails, run the build script manually.
 
 ```sh
-julia -e 'Pkg.clone("https://github.com/IshitaTakeshi/PartsBasedDetector.jl.git")'
-cd deps
-./build.sh
+$<package root>/deps/build.sh
 ```
 
 # Usage
