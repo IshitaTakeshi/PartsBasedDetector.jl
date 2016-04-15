@@ -1,5 +1,7 @@
-PartsBasedDetector
-==================
+PartsBasedDetector.jl
+=====================
+
+This is a Julia interface for [PartsBasedDetector](https://github.com/wg-perception/PartsBasedDetector)
 
 #Setting environment
 
