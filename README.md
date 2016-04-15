@@ -12,6 +12,9 @@ cd deps
 # Usage
 
 ```julia
+using PyCall
+using PartsBasedDetector: make_estimator, estimate
+
 estimator = make_estimator()
 candidates = estimate(estimator, filename, n_candidates = 3)
 
