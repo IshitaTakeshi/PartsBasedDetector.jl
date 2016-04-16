@@ -20,4 +20,9 @@ x, y = parts[:, 1], parts[:, 2]
 image = plt.imread(filename_png)
 plt.imshow(image)
 plt.plot(x, y, color="r", marker="o", ls="")
+
+for i in 1:size(parts, 1)
+    plt.annotate(i, (x[i], y[i]), color="w")
+end
+
 plt.show()
