@@ -18,9 +18,10 @@ module PartsBasedDetector
 
 export Candidate, make_estimator, estimate
 
-const shared_library_path = "../lib/libPartsBasedDetector.so"
-const model_path = joinpath(Pkg.dir("PartsBasedDetector"),
-                            "models", "PersonINRIA_9parts.xml")
+package_root = Pkg.dir("PartsBasedDetector")
+const shared_library_path = joinpath(package_root, "lib",
+                                     "libPartsBasedDetector.so")
+const model_path = joinpath(package_root, "models", "PersonINRIA_9parts.xml")
 
 type Point
     x::UInt32
