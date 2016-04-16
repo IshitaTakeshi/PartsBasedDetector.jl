@@ -1,7 +1,7 @@
 PartsBasedDetector.jl
 =====================
 
-This is a Julia interface for [PartsBasedDetector](https://github.com/wg-perception/PartsBasedDetector)
+This is a Julia interface for [PartsBasedDetector](https://github.com/wg-perception/PartsBasedDetector) which is a C++ implementation of "Articulated Pose Estimation with Flexible Mixtures of Parts".
 
 # Installation
 
@@ -35,3 +35,5 @@ plt.imshow(image)
 plt.plot(x, y, color="r", marker="o", ls="")
 plt.show()
 ```
+
+Run `example/example.jl` for the demo.
