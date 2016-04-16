@@ -14,7 +14,7 @@ $julia
 If build fails, run the build script manually.
 
 ```sh
-$<package root>/deps/build.sh
+$<package_root>/deps/build.sh
 ```
 
 # Usage
