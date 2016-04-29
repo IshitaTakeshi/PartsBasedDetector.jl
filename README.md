@@ -12,9 +12,10 @@ $julia
 ```
 
 If build fails, run the build script manually.
+OpenCV and other dependent packages will be installed.
 
 ```sh
-$<package_root>/deps/build.sh
+$sudo <package_root>/deps/build.sh
 ```
 
 # Usage
