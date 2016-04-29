@@ -15,7 +15,7 @@ If build fails, run the build script manually.
 OpenCV and other dependent packages will be installed.
 
 ```sh
-$sudo <package_root>/deps/build.sh
+$<package_root>/deps/build.sh
 ```
 
 # Usage
