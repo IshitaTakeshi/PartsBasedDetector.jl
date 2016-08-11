@@ -18,7 +18,8 @@ cvmatio_dir="$pbd_dir/cvmatio"
 cvmatio_build_dir="$cvmatio_dir/build"
 
 sudo apt-get install git cmake libboost-all-dev doxygen zlib1g-dev python3-matplotlib python-matplotlib
-git submodule update --init
+sudo pip3 install scipy matplotlib
+git submodule update --init --recursive
 
 mkdir -p $src_dir
 
